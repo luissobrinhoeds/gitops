@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nexus
+spec:
+  project: default
+
+  source:
+    repoURL: git@github.com:luissobrinhoeds/gitops.git
+    targetRevision: HEAD
+    path: apps/nexus/
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nexus
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true

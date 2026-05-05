@@ -1,0 +1,38 @@
+nameOverride: nexus
+
+persistence:
+  enabled: true
+  storageSize: 20Gi
+  storageClass: ocs-storagecluster-ceph-rbd
+
+service:
+  type: ClusterIP
+  name: nexus-ui
+
+nexus:
+  env:
+    - name: INSTALL4J_ADD_VM_PARAMS
+      value: "-Xms1g -Xmx2g"
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      memory: "2Gi"
+  securityContext:
+    fsGroup: null
+    runAsUser: null
+    runAsGroup: null
+  containerSecurityContext: {}
+  podSecurityContext: {}
+  nodeSelector:
+    node-role.kubernetes.io/infra: ""
+
+tolerations:
+  - key: "node-role.kubernetes.io/infra"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+serviceAccount:
+  create: true
+  name: nexus

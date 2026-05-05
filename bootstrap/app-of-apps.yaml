@@ -1,17 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nexus-helm
+  name: app-of-apps
   namespace: openshift-gitops
 spec:
   project: default
 
   source:
-    repoURL: https://github.com/luissobrinhoeds/nexus.git
+    repoURL: git@github.com:luissobrinhoeds/gitops.git
     targetRevision: HEAD
-    path: apps/
-    directory:
-      recurse: true
+    path: app-projects/
 
   destination:
     server: https://kubernetes.default.svc
