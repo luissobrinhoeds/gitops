@@ -1,6 +1,9 @@
 nameOverride: nexus
 fullnameOverride: nexus
 
+image:
+  tag: 3.68.1
+
 persistence:
   enabled: false
   storageSize: 20Gi
