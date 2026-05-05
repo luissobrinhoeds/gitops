@@ -1,0 +1,272 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: send-webhook-to-servicenow
+  labels:
+    app.kubernetes.io/version: '1.0'
+  annotations:
+    tekton.dev/displayName: 'Send Webhook to ServiceNow (Basic Auth)'
+    tekton.dev/tags: servicenow, webhook, devops, notification
+    tekton.dev/platforms: 'linux/amd64,linux/arm64'
+spec:
+  description: >-
+    Esta Task envia uma notificação webhook para o ServiceNow DevOps Change Velocity
+    ao final da execução de um Pipeline. Ela coleta automaticamente informações do
+    contexto do PipelineRun e envia para o endpoint configurado.
+    Autenticação: Basic Auth (user/password).
+
+  params:
+    # Parâmetros de Conexão ServiceNow
+    - name: servicenow-url
+      type: string
+      description: 'URL base da instância ServiceNow (ex: https://inepdesen.service-now.com)'
+      default: ''
+
+    - name: servicenow-user
+      type: string
+      description: 'Usuário do ServiceNow para Basic Auth (opcional; se vazio, usa Secret)'
+      default: ''
+
+    - name: servicenow-password
+      type: string
+      description: 'Senha do ServiceNow para Basic Auth (opcional; se vazio, usa Secret)'
+      default: ''
+
+    # Parâmetros do Pipeline/PipelineRun
+    - name: pipeline-run-name
+      type: string
+      description: 'Nome do PipelineRun atual'
+      default: '$(context.pipelineRun.name)'
+
+    - name: pipeline-name
+      type: string
+      description: 'Nome do Pipeline'
+      default: '$(context.pipeline.name)'
+
+    - name: pipeline-status
+      type: string
+      description: 'Status final do Pipeline (Succeeded, Failed, Cancelled)'
+      default: 'Unknown'
+
+    - name: namespace
+      type: string
+      description: 'Namespace do Kubernetes/OpenShift onde o pipeline está executando'
+      default: '$(context.pipelineRun.namespace)'
+
+    # Parâmetros de Código Fonte (opcionais)
+    - name: repository-url
+      type: string
+      description: 'URL do repositório Git'
+      default: ''
+
+    - name: branch
+      type: string
+      description: 'Branch do Git'
+      default: ''
+
+    - name: commit-id
+      type: string
+      description: 'SHA do commit'
+      default: ''
+
+    # Parâmetros de Timestamp
+    - name: start-time
+      type: string
+      description: 'Timestamp de início do pipeline (formato ISO 8601)'
+      default: ''
+
+    - name: end-time
+      type: string
+      description: 'Timestamp de fim do pipeline (formato ISO 8601)'
+      default: ''
+
+    # Campos exigidos pelo payload (progress)
+    - name: total-steps
+      type: string
+      description: 'Total de passos/etapas (obrigatório no payload). Recomenda-se passar via Pipeline.'
+      default: '1'
+
+    - name: current-step
+      type: string
+      description: 'Passo/etapa atual (obrigatório no payload). Para notificação final, normalmente 1.'
+      default: '1'
+
+  stepTemplate:
+    env:
+      # Values from Secret (fallback). Keys: instance-url, user, password
+      - name: SERVICENOW_URL_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: service-now-secret
+            key: instance-url
+      - name: SERVICENOW_USER_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: service-now-secret
+            key: user
+      - name: SERVICENOW_PASSWORD_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: service-now-secret
+            key: password
+
+  steps:
+    - name: send-notification
+      image: registry.access.redhat.com/ubi8/ubi-minimal:8.9
+      env:
+        # Optional overrides via params (if empty, script falls back to *_SECRET)
+        - name: SERVICENOW_URL
+          value: $(params.servicenow-url)
+        - name: SERVICENOW_USER
+          value: $(params.servicenow-user)
+        - name: SERVICENOW_PASSWORD
+          value: $(params.servicenow-password)
+
+        - name: PIPELINE_RUN_NAME
+          value: $(params.pipeline-run-name)
+        - name: PIPELINE_NAME
+          value: $(params.pipeline-name)
+        - name: PIPELINE_STATUS
+          value: $(params.pipeline-status)
+        - name: NAMESPACE
+          value: $(params.namespace)
+
+        - name: REPOSITORY_URL
+          value: $(params.repository-url)
+        - name: BRANCH
+          value: $(params.branch)
+        - name: COMMIT_ID
+          value: $(params.commit-id)
+
+        - name: START_TIME
+          value: $(params.start-time)
+        - name: END_TIME
+          value: $(params.end-time)
+
+        - name: TOTAL_STEPS
+          value: $(params.total-steps)
+        - name: CURRENT_STEP
+          value: $(params.current-step)
+
+      script: |
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        echo "=========================================="
+        echo "ServiceNow DevOps Webhook Notification"
+        echo "Auth: Basic (user/password)"
+        echo "=========================================="
+        echo ""
+
+        # Install curl if needed
+        if ! command -v curl &> /dev/null; then
+          echo "Instalando curl..."
+          microdnf install -y curl
+        fi
+
+        # Apply fallbacks from Secret when params are empty
+        SERVICENOW_URL="${SERVICENOW_URL:-${SERVICENOW_URL_SECRET:-}}"
+        SERVICENOW_USER="${SERVICENOW_USER:-${SERVICENOW_USER_SECRET:-}}"
+        SERVICENOW_PASSWORD="${SERVICENOW_PASSWORD:-${SERVICENOW_PASSWORD_SECRET:-}}"
+
+        # Validate required values
+        if [ -z "${SERVICENOW_URL}" ]; then
+          echo "ERRO: servicenow-url não foi fornecido (nem via Secret service-now-secret:instance-url)"
+          exit 1
+        fi
+
+        if [ -z "${SERVICENOW_USER}" ]; then
+          echo "ERRO: servicenow-user não foi fornecido (nem via Secret service-now-secret:user)"
+          exit 1
+        fi
+
+        if [ -z "${SERVICENOW_PASSWORD}" ]; then
+          echo "ERRO: servicenow-password não foi fornecido (nem via Secret service-now-secret:password)"
+          exit 1
+        fi
+
+        # Generate timestamps if missing
+        if [ -z "${END_TIME}" ]; then
+          END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        fi
+
+        if [ -z "${START_TIME}" ]; then
+          START_TIME=$(date -u -d "10 minutes ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ")
+        fi
+
+        # Remove timezone offset from START_TIME (everything after + or -)
+        # Convert 2026-01-06T17:30:49+00:00 to 2026-01-06T17:30:49
+        if [ -n "${START_TIME}" ]; then
+          START_TIME=$(echo "${START_TIME}" | sed 's/[+-][0-9][0-9]:[0-9][0-9]$//' | sed 's/[Zz]$//')
+        fi
+
+        # Normalize URL to avoid double slashes
+        SERVICENOW_URL="${SERVICENOW_URL%/}"
+
+        # Endpoint without toolId
+        ENDPOINT="${SERVICENOW_URL}/api/sn_devops/tekton_devops/pipeline_execution"
+
+        # Build payload with the EXACT required field list/names
+        PAYLOAD=$(cat <<EOF
+        {
+          "eventType": "pipeline_execution",
+          "toolName": "tekton",
+          "orchestrationTaskId": "${PIPELINE_RUN_NAME}",
+          "pipelineRunName": "${PIPELINE_RUN_NAME}",
+          "pipelineName": "${PIPELINE_NAME}",
+          "totalSteps": ${TOTAL_STEPS},
+          "currentStep": ${CURRENT_STEP},
+          "status": "${PIPELINE_STATUS}",
+          "namespace": "${NAMESPACE}",
+          "repositoryUrl": "${REPOSITORY_URL}",
+          "branch": "${BRANCH}",
+          "commitId": "${COMMIT_ID}",
+          "startTime": "${START_TIME}",
+          "endTime": "${END_TIME}"
+        }
+        EOF
+        )
+
+        echo "Informações da Notificação:"
+        echo "  Pipeline Run: ${PIPELINE_RUN_NAME}"
+        echo "  Pipeline: ${PIPELINE_NAME}"
+        echo "  Status: ${PIPELINE_STATUS}"
+        echo "  Namespace: ${NAMESPACE}"
+        echo "  Total Steps: ${TOTAL_STEPS}"
+        echo "  Current Step: ${CURRENT_STEP}"
+        echo "  Start Time: ${START_TIME}"
+        echo "  End Time: ${END_TIME}"
+        echo ""
+        echo "Endpoint ServiceNow:"
+        echo "  ${ENDPOINT}"
+        echo ""
+
+        echo "Enviando notificação para ServiceNow..."
+
+        HTTP_RESPONSE=$(curl -w "\n%{http_code}" -s -X POST \
+          -H "Content-Type: application/json" \
+          --user "${SERVICENOW_USER}:${SERVICENOW_PASSWORD}" \
+          -d "${PAYLOAD}" \
+          "${ENDPOINT}")
+
+        HTTP_BODY=$(echo "$HTTP_RESPONSE" | head -n -1)
+        HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tail -n 1)
+
+        echo ""
+        echo "Resposta do ServiceNow:"
+        echo "  Status HTTP: ${HTTP_STATUS}"
+        echo "  Body: ${HTTP_BODY}"
+        echo ""
+
+        if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+          echo "✓ Notificação enviada com sucesso!"
+          exit 0
+        else
+          echo "✗ Falha ao enviar notificação"
+          echo "  Status HTTP: ${HTTP_STATUS}"
+          echo "  Resposta: ${HTTP_BODY}"
+          echo ""
+          echo "⚠ A notificação falhou, mas o pipeline continuará"
+          exit 0
+        fi

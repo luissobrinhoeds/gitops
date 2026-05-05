@@ -1,0 +1,166 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: process-tekton-yaml
+spec:
+  params:
+    - name: defaultAppName
+      type: string
+    - name: defaultProjectName
+      type: string
+    - name: environmentToDeploy
+      type: string
+    - name: registryUrl
+      type: string
+    - name: appSourceRepoCommitHash
+      type: string
+    - name: pipelineNameCamelCase
+      type: string
+    - name: cobuildAppName
+      type: string
+  results:
+    - name: global_appName
+      type: string
+    - name: global_projectName
+      type: string
+    - name: buildah_containerFileLocation
+      type: string
+    - name: buildah_buildArgs
+      type: array
+    - name: gitopsChanges
+      type: array
+    - name: fullyQualifiedImageName
+      type: string
+    - name: maven_goals
+      type: array
+    - name: maven_envFrom_configMapRef_name
+      type: string
+    - name: maven_envFrom_secretRef_name
+      type: string
+    - name: maven_java_version
+      type: string
+    - name: maven_mirror_url
+      type: string
+    - name: argocd_app_name
+      type: string
+  workspaces:
+    - name: app-source-repo
+    - name: process-tekton-yaml
+  steps:
+    - name: process-tekton-yaml
+      image: image-registry.openshift-image-registry.svc:5000/openshift/yq
+      workingDir: $(workspaces.process-tekton-yaml.path)
+      script: |
+        #!/bin/bash
+
+        set +e -x
+
+        export TEKTON_YAML_PATH=$(workspaces.process-tekton-yaml.path)/tekton.yaml
+        if [ -f "$(workspaces.app-source-repo.path)/.tekton.yaml" ]; then
+          cp "$(workspaces.app-source-repo.path)/.tekton.yaml" "$TEKTON_YAML_PATH"
+        else
+          echo "$TEKTON_YAML_PATH not found. Default values will be defined."
+          touch "$TEKTON_YAML_PATH"
+        fi
+
+        if [ -n "$(params.cobuildAppName)" ]; then
+          APP_ARRAY_INDEX=$(yq e '.apps | to_entries | map(select(.value.name == "$(params.cobuildAppName)")) | .[].key' "$TEKTON_YAML_PATH")
+
+          if [ -z "$APP_ARRAY_INDEX" ]; then
+            echo "[ERROR] App "$(params.cobuildAppName)" doesn't exists in .tekton.yaml"
+            exit 1
+          fi
+        else
+          if [ "$(yq e '.apps | length' "$TEKTON_YAML_PATH")" -gt 1 ]; then
+            echo "[ERROR] The apps array has more than one app, you need to use the cobuild EventListener."
+          fi
+          APP_ARRAY_INDEX=0
+        fi
+
+        global_appName=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].name | select(.)' $TEKTON_YAML_PATH)
+        if [ -z "$global_appName" ]; then
+          global_appName=$(yq eval '.global.appName | select(.)' $TEKTON_YAML_PATH)
+        fi
+        if [ -z "$global_appName" ]; then
+          global_appName=$(params.defaultAppName)
+        fi
+        echo -n "$global_appName" > "$(results.global_appName.path)"
+
+        global_projectName=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].projectName | select(.)' $TEKTON_YAML_PATH)
+        if [ -z "$global_projectName" ]; then
+          global_projectName=$(yq eval '.global.projectName | select(.)' $TEKTON_YAML_PATH)
+        fi
+        if [ -z "$global_projectName" ]; then
+          global_projectName=$(params.defaultProjectName)
+        fi
+        echo -n "$global_projectName" > "$(results.global_projectName.path)"
+
+        fullyQualifiedImageName=$(params.registryUrl)/${global_projectName}-$(params.environmentToDeploy)/${global_appName}:$(params.environmentToDeploy)-$(params.appSourceRepoCommitHash)
+        echo -n "${fullyQualifiedImageName}" > "$(results.fullyQualifiedImageName.path)"
+
+        buildah_containerFileLocation=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).buildah.containerFileLocation | select(.)' "$TEKTON_YAML_PATH")
+        if [ -n "$buildah_containerFileLocation" ]; then
+          echo -n "$buildah_containerFileLocation" > "$(results.buildah_containerFileLocation.path)"
+        else
+          echo -n "container/Containerfile" > "$(results.buildah_containerFileLocation.path)"
+        fi
+
+        buildah_buildArgs=$(yq eval -o=json '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).buildah.buildArgs.perEnvironment.hardCoded.$(params.environmentToDeploy) | select(.) | select(length > 0)' "$TEKTON_YAML_PATH")
+        if [ -n "$buildah_buildArgs" ]; then
+          echo -n "$buildah_buildArgs" > "$(results.buildah_buildArgs.path)"
+        else
+        cat <<EOF > "$(results.buildah_buildArgs.path)"
+        []
+        EOF
+        fi
+
+        maven_goals=$(yq eval -o=json '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).maven.goals | select(.) | select(length > 0)' "$TEKTON_YAML_PATH")
+        if [ -n "$maven_goals" ]; then
+          echo -n "$maven_goals" > "$(results.maven_goals.path)"
+        else
+        cat <<EOF > "$(results.maven_goals.path)"
+        []
+        EOF
+        fi
+
+        maven_envFrom_configMapRef_name=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).maven.envFrom.perEnvironment.$(params.environmentToDeploy).configMapRef.name | select(.)' $TEKTON_YAML_PATH)
+        if [ -z "$maven_envFrom_configMapRef_name" ]; then
+          maven_envFrom_configMapRef_name=dummy-maven-env-var-configmap
+        fi
+        echo -n "$maven_envFrom_configMapRef_name" > "$(results.maven_envFrom_configMapRef_name.path)"
+
+        maven_envFrom_secretRef_name=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).maven.envFrom.perEnvironment.$(params.environmentToDeploy).secretRef.name | select(.)' $TEKTON_YAML_PATH)
+        if [ -z "$maven_envFrom_secretRef_name" ]; then
+          maven_envFrom_secretRef_name=dummy-maven-env-var-secret
+        fi
+        echo -n "$maven_envFrom_secretRef_name" > "$(results.maven_envFrom_secretRef_name.path)"
+
+        maven_java_version=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).maven.javaVersion | select(.)' $TEKTON_YAML_PATH)
+        if [ -z "$maven_java_version" ]; then
+          maven_java_version=21
+        fi
+        echo -n "$maven_java_version" > "$(results.maven_java_version.path)"
+
+        maven_mirror_url=$(yq eval '.apps['"$APP_ARRAY_INDEX"'].pipelineConfig.$(params.pipelineNameCamelCase).maven.mirrorUrl | select(.)' $TEKTON_YAML_PATH)
+        if [ -z "$maven_mirror_url" ]; then
+          maven_mirror_url=http://172.30.200.75/nexus/repository/public/
+        fi
+        echo -n "$maven_mirror_url" > "$(results.maven_mirror_url.path)"
+
+        env=${fullyQualifiedImageName#*/}; env=${env%%/*}
+        argocd_app_name="${env}-${global_appName}"
+        if [ -z "$argocd_app_name" ]; then
+          argocd_app_name=none
+        fi
+        echo -n "$argocd_app_name" > "$(results.argocd_app_name.path)"
+
+        gitopsChanges=$(yq eval -o=json ".apps[$APP_ARRAY_INDEX].pipelineConfig.$(params.pipelineNameCamelCase).gitopsChanges.imageUpdate |  map(\"yq -i '\" + .yamlPath + \" = \\\"$fullyQualifiedImageName\\\"' \\\"\" + .fileLocation + \"\\\"\") | select(.) | select(length > 0)" "$TEKTON_YAML_PATH")
+        if [ -n "$gitopsChanges" ]; then
+          echo -n "$gitopsChanges" > "$(results.gitopsChanges.path)"
+        else
+        cat <<EOF > "$(results.gitopsChanges.path)"
+        [
+          "yq -i '.spec.template.spec.containers[0].image = \"${fullyQualifiedImageName}\"' \"deployment.yaml\""
+        ]
+        EOF
+        fi

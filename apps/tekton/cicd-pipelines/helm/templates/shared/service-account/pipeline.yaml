@@ -1,0 +1,9 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: pipeline
+secrets:
+  - name: git-credentials
+  - name: redhat-pull-secret
+imagePullSecrets:
+  - name: redhat-pull-secret

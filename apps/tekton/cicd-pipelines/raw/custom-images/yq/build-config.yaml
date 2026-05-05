@@ -1,0 +1,28 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: yq-build
+  namespace: openshift
+spec:
+  source:
+    type: Dockerfile
+    dockerfile: |
+      FROM registry.access.redhat.com/ubi9/ubi:latest
+
+      RUN curl -L https://github.com/mikefarah/yq/releases/download/v4.47.1/yq_linux_amd64 -o /usr/local/bin/yq && \
+          chmod +x /usr/local/bin/yq
+  strategy:
+    type: Docker
+    dockerStrategy:
+      forcePull: true
+  output:
+    to:
+      kind: ImageStreamTag
+      name: yq:latest
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange:
+        from:
+          kind: ImageStreamTag
+          name: ubi9:latest

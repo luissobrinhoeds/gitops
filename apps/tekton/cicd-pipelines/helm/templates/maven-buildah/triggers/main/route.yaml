@@ -1,0 +1,17 @@
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: maven-buildah
+spec:
+  host: 
+  to:
+    kind: Service
+    name: el-maven-buildah
+    weight: 100
+  port:
+    targetPort: http-listener
+  wildcardPolicy: None
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
