@@ -1,5 +1,3 @@
-nameOverride: nexus
-
 persistence:
   enabled: false
   storageSize: 20Gi
