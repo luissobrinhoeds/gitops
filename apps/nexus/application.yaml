@@ -11,8 +11,35 @@ spec:
     chart: nexus-repository-manager
     targetRevision: "*"
     helm:
-      valueFiles:
-        - values.yaml
+      values: |
+        statefulset:
+          enabled: true
+
+        persistence:
+          enabled: true
+          storageSize: 20Gi
+          storageClass: ocs-storagecluster-ceph-rbd
+
+        service:
+          type: ClusterIP
+
+        nexus:
+          env:
+            - name: INSTALL4J_ADD_VM_PARAMS
+              value: "-Xms1g -Xmx2g"
+
+        securityContext: {}
+        containerSecurityContext: {}
+        podSecurityContext: {}
+
+        initContainers: []
+
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "256Mi"
+          limits:
+            memory: "2Gi"
 
   destination:
     server: https://kubernetes.default.svc
