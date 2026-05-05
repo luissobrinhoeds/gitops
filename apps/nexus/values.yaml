@@ -1,3 +1,6 @@
+nameOverride: nexus
+fullnameOverride: nexus
+
 persistence:
   enabled: false
   storageSize: 20Gi
@@ -6,6 +9,7 @@ persistence:
 service:
   type: ClusterIP
   name: nexus-ui
+  enabled: true
 
 nexus:
   env:
