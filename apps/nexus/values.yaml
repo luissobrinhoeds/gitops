@@ -1,7 +1,7 @@
 nameOverride: nexus
 
 persistence:
-  enabled: true
+  enabled: false
   storageSize: 20Gi
   # storageClass: ocs-storagecluster-ceph-rbd
 
