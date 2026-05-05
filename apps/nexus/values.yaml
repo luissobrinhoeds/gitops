@@ -3,7 +3,7 @@ nameOverride: nexus
 persistence:
   enabled: true
   storageSize: 20Gi
-  storageClass: ocs-storagecluster-ceph-rbd
+  # storageClass: ocs-storagecluster-ceph-rbd
 
 service:
   type: ClusterIP
