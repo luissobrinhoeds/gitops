@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nexus
+  namespace: openshift-gitops
+spec:
+  project: default
+
+  source:
+    repoURL: https://sonatype.github.io/helm3-charts/
+    chart: nexus-repository-manager
+    targetRevision: "*"
+    helm:
+      valueFiles:
+        - values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nexus
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

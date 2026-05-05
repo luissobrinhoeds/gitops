@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: nexus
+  namespace: nexus
+spec:
+  to:
+    kind: Service
+    name: nexus-repository-manager
+  port:
+    targetPort: http
