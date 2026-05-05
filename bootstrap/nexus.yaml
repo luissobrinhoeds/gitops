@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-app
+  name: nexus
   namespace: openshift-gitops
 spec:
   project: default
@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/luissobrinhoeds/nexus.git
     targetRevision: HEAD
-    path: apps
+    path: apps/nexus/
 
   destination:
     server: https://kubernetes.default.svc
@@ -19,3 +19,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
