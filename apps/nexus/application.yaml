@@ -12,6 +12,9 @@ spec:
     targetRevision: "*"
     helm:
       values: |
+
+        nameOverride: nexus
+        
         persistence:
           enabled: true
           storageSize: 20Gi
