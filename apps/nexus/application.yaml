@@ -31,7 +31,9 @@ spec:
             limits:
               memory: "2Gi"
           securityContext:
-            fsGroup: 2000
+            fsGroup: null
+            runAsUser: null
+            runAsGroup: null
           containerSecurityContext: {}
           podSecurityContext: {}
           nodeSelector:
