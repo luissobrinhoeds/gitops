@@ -12,9 +12,6 @@ spec:
     targetRevision: "*"
     helm:
       values: |
-        statefulset:
-          enabled: true
-
         persistence:
           enabled: true
           storageSize: 20Gi
@@ -27,19 +24,24 @@ spec:
           env:
             - name: INSTALL4J_ADD_VM_PARAMS
               value: "-Xms1g -Xmx2g"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "256Mi"
+            limits:
+              memory: "2Gi"
+          securityContext: {}
+          containerSecurityContext: {}
+          podSecurityContext: {}
+          nodeSelector:
+            node-role.kubernetes.io/infra: ""
 
-        securityContext: {}
-        containerSecurityContext: {}
-        podSecurityContext: {}
+        tolerations:
+          - key: "node-role.kubernetes.io/infra"
+            operator: "Exists"
+            effect: "NoSchedule"
 
-        initContainers: []
 
-        resources:
-          requests:
-            cpu: "50m"
-            memory: "256Mi"
-          limits:
-            memory: "2Gi"
 
   destination:
     server: https://kubernetes.default.svc
