@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/luissobrinhoeds/nexus.git
     targetRevision: HEAD
-    path: apps/nexus/
+    path: apps/
 
   destination:
     server: https://kubernetes.default.svc
