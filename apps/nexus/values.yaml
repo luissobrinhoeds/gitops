@@ -4,6 +4,7 @@ statefulset:
 persistence:
   enabled: true
   storageSize: 20Gi
+  storageClass: ocs-storagecluster-ceph-rbd
 
 service:
   type: ClusterIP
