@@ -12,7 +12,7 @@ spec:
     path: ocp-config/
 
   destination:
-    server: server: https://a7c9bff3489fa4818aed9597949d423b-7ecc39a3f505bd14.elb.us-east-1.amazonaws.com:6443
+    server: https://a7c9bff3489fa4818aed9597949d423b-7ecc39a3f505bd14.elb.us-east-1.amazonaws.com:6443
     namespace: openshift-gitops
 
   syncPolicy:
