@@ -19,6 +19,7 @@ spec:
 
         service:
           type: ClusterIP
+          name: nexus-ui
 
         nexus:
           env:
@@ -45,7 +46,7 @@ spec:
             effect: "NoSchedule"
 
         serviceAccount:
-          create: false
+          create: true
           name: nexus
 
 

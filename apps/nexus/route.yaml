@@ -6,6 +6,9 @@ metadata:
 spec:
   to:
     kind: Service
-    name: nexus-repository-manager
+    name: nexus-ui
   port:
-    targetPort: http
+    targetPort: nexus-ui
+  tls:
+    insecureEdgeTerminationPolicy: Allow
+    termination: edge
