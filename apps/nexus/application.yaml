@@ -30,7 +30,8 @@ spec:
               memory: "256Mi"
             limits:
               memory: "2Gi"
-          securityContext: {}
+          securityContext:
+            fsGroup: 2000
           containerSecurityContext: {}
           podSecurityContext: {}
           nodeSelector:
@@ -40,6 +41,10 @@ spec:
           - key: "node-role.kubernetes.io/infra"
             operator: "Exists"
             effect: "NoSchedule"
+
+        serviceAccount:
+          create: false
+          name: nexus
 
 
 
