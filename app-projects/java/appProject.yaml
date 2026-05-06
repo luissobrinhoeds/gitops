@@ -2,16 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: java
+  namespace: openshift-gitops
 spec:
-  description: 'Projetos em java'
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
   destinations:
-    server: https://kubernetes.default.svc
-    namespace: openshift-gitops
-  namespaceResourceWhitelist:
-    - group: '*'
-      kind: '*'
+    - namespace: '*'
+      server: '*'
   sourceRepos:
     - '*'
