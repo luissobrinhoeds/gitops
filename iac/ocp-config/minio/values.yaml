@@ -24,3 +24,6 @@ service:
 
 ingress:
   enabled: false
+
+securityContext:
+  enabled: false
