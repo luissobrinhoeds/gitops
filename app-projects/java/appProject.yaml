@@ -8,9 +8,8 @@ spec:
     - group: '*'
       kind: '*'
   destinations:
-    - name: '*'
-      namespace: '*'
-      server: '*'
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
   namespaceResourceWhitelist:
     - group: '*'
       kind: '*'
