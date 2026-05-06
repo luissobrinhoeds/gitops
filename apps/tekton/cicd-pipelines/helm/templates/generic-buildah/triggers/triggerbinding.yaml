@@ -10,5 +10,8 @@ spec:
     - name: GIT_BRANCH
       value: $(body.ref)
 
-    - name: git-commit
-      value: $(body.head_commit.id)
+    - name: GIT_COMMIT_ID
+      value: $(body.commits.id)
+
+    - name: GIT_REPO_NAME
+      value: $(body.name)

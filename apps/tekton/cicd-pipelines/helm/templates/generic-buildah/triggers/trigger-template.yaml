@@ -6,12 +6,14 @@ spec:
   params:
     - name: GIT_REPO
     - name: GIT_BRANCH
+    - name: GIT_COMMIT_ID
+    - name: GIT_REPO_NAME
 
   resourcetemplates:
     - apiVersion: tekton.dev/v1
       kind: PipelineRun
       metadata:
-        generateName: ci-run-
+        generateName: $(tt.params.GIT_REPO_NAME)-cicd
       spec:
         serviceAccountName: pipeline
 
@@ -33,3 +35,9 @@ spec:
 
           - name: GIT_BRANCH
             value: $(tt.params.GIT_BRANCH)
+
+          - name: GIT_COMMIT_ID
+            value: $(tt.params.GIT_COMMIT_ID)
+
+          - name: GIT_REPO_NAME
+            value: $(tt.params.GIT_REPO_NAME)
