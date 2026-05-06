@@ -13,7 +13,7 @@ spec:
       recurse: true
 
   destination:
-    name: demo-cluster
+    name: ocp-homol
     namespace: openshift
 
   syncPolicy:

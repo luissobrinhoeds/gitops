@@ -11,7 +11,7 @@ spec:
     path: apps/nexus/
 
   destination:
-    name: demo-cluster
+    name: ocp-homol
     namespace: nexus
 
   syncPolicy:
