@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: java-cicd
 spec:
-  project: java
+  project: default
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
     path: apps/tekton/cicd-pipelines/helm
