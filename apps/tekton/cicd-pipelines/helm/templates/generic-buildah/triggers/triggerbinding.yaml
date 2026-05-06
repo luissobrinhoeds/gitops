@@ -1,0 +1,14 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: generic-buildah
+spec:
+  params:
+    - name: GIT_REPO
+      value: $(body.repository.ssh_url)
+
+    - name: GIT_BRANCH
+      value: $(body.ref)
+
+    - name: git-commit
+      value: $(body.head_commit.id)
