@@ -13,7 +13,7 @@ spec:
 
   destination:
     name: ocp-homol
-    namespace: nexus
+    namespace: minio
 
   syncPolicy:
     automated:

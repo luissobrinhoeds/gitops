@@ -1,0 +1,24 @@
+mode: standalone
+
+replicas: 1
+
+rootUser: admin
+rootPassword: QmzQsDm3SWC8XRjEO98l2JdzAOeTqJ
+
+persistence:
+  enabled: true
+  size: 100Gi
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 1Gi
+  limits:
+    cpu: 2
+    memory: 4Gi
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
