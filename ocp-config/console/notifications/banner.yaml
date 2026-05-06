@@ -1,9 +1,0 @@
-apiVersion: console.openshift.io/v1
-kind: ConsoleNotification
-metadata:
-  name: gitops
-spec:
-  text: "⚠️ Esse cluster é gerenciado por GitOps. Não crie ou edite recursos manualmente."
-  location: BannerTop
-  backgroundColor: '#a10b0b'
-  color: '#ffffff'
