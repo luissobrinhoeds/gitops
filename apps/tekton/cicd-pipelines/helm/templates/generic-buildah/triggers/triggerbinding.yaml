@@ -14,4 +14,4 @@ spec:
       value: $(body.commits.id)
 
     - name: GIT_REPO_NAME
-      value: $(body.name)
+      value: $(body.repository.name)

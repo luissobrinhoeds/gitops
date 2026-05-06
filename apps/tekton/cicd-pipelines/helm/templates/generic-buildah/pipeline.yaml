@@ -7,10 +7,12 @@ spec:
   params:
     - name: GIT_REPO
     - name: GIT_BRANCH
+    - name: GIT_COMMIT_ID
+    - name: GIT_REPO_NAME
 
   workspaces:
     - name: shared-workspace
-      
+
   tasks:
     - name: git-clone-repo-app
       taskRef:
@@ -27,6 +29,6 @@ spec:
           value: '${params.GIT_REPO}'
         - name: REVISION
           value: '${params.GIT_BRANCH}'
-      workspace:
+      workspaces:
         - name: output
           workspace: shared-workspace
