@@ -38,6 +38,13 @@ spec:
           limits:
             cpu: "2"
             memory: "4Gi"
+        volumeMounts:
+          - name: quay-storage
+            mountPath: /datastorage/registry
+        volumes:
+          - name: quay-storage
+            persistentVolumeClaim:
+              claimName: quay-storage
 
     - kind: postgres
       managed: true
@@ -53,7 +60,4 @@ spec:
     - kind: redis
       managed: true
 
-  storage:
-    type: filesystem
-    persistentVolumeClaim:
-      claimName: quay-storage
+  
