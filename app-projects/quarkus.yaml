@@ -1,23 +1,28 @@
-project: java
-source:
-  repoURL: git@github.com:luissobrinhoeds/gitops.git
-  path: apps/tekton/cicd-pipelines/helm
-  targetRevision: HEAD
-  helm:
-    valueFiles:
-      - values.yaml
-destination:
-  name: ocp-homol
-  namespace: java-cicd
-syncPolicy:
-  automated:
-    prune: true
-    selfHeal: true
-  syncOptions:
-    - CreateNamespace=true
-ignoreDifferences:
-  - kind: ServiceAccount
-    name: pipeline
-    jsonPointers:
-      - /secrets
-      - /imagePullSecrets
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: java-cicd
+spec:
+  project: java
+  source:
+    repoURL: git@github.com:luissobrinhoeds/gitops.git
+    path: apps/tekton/cicd-pipelines/helm
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    name: ocp-homol
+    namespace: java-cicd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - kind: ServiceAccount
+      name: pipeline
+      jsonPointers:
+        - /secrets
+        - /imagePullSecrets
