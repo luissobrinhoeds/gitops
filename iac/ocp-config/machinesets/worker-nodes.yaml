@@ -4,6 +4,7 @@ metadata:
   annotations:
     machine.openshift.io/memoryMb: '16384'
     machine.openshift.io/vCPU: '4'
+    argocd.argoproj.io/sync-options: Skip=true
   name: ocp-homol-24kpm-worker-0
   namespace: openshift-machine-api
   labels:

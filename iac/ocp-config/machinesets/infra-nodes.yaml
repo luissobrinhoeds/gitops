@@ -4,6 +4,7 @@ metadata:
   annotations:
     machine.openshift.io/memoryMb: "16384"
     machine.openshift.io/vCPU: "4"
+    argocd.argoproj.io/sync-options: Skip=true
   labels:
     hive.openshift.io/machine-pool: infra
     hive.openshift.io/managed: "true"
