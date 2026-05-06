@@ -25,5 +25,5 @@ spec:
         - name: REVISION
           value: '${params.GIT_BRANCH}'
       workspace:
-        - name: output
+        - name: shared-workspace
           workspace: shared-workspace
