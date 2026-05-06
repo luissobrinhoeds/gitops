@@ -11,7 +11,7 @@ spec:
     path: apps/nexus/
 
   destination:
-    server: https://a7c9bff3489fa4818aed9597949d423b-7ecc39a3f505bd14.elb.us-east-1.amazonaws.com:6443
+    name: demo-cluster
     namespace: nexus
 
   syncPolicy:
