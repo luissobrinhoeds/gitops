@@ -27,3 +27,14 @@ ingress:
 
 securityContext:
   enabled: false
+
+buckets:
+  - name: quay
+    policy: none
+    purge: false
+    versioning: false
+
+users:
+  - accessKey: quay-user
+    secretKey: quay-secret
+    policy: readwrite

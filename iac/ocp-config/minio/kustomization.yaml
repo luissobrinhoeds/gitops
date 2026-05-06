@@ -10,8 +10,3 @@ helmCharts:
     releaseName: minio
     namespace: minio
     valuesFile: values.yaml
-
-resources:
-  - secret.yaml
-  - rolebinding.yaml
-  - job.yaml
