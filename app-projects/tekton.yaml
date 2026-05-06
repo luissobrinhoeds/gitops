@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
     targetRevision: HEAD
-    path: apps/tekton/cicd-pipelines/
+    path: apps/tekton/cicd-pipelines/raw/
     directory:
       recurse: true
 
