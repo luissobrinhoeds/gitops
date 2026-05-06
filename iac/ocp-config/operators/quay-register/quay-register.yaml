@@ -10,7 +10,7 @@ spec:
 
   components:
     - kind: objectstorage
-      managed: true
+      managed: false
 
     - kind: horizontalpodautoscaler
       managed: false

@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-bootstrap
+  namespace: minio
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+        - name: mc
+          image: quay.io/minio/mc:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Aguardando MinIO ficar disponível..."
+
+              until nc -z minio.minio.svc 9000; do
+                echo "MinIO ainda não está pronto..."
+                sleep 5
+              done
+
+              echo "Configurando alias..."
+              mc alias set local http://minio.minio.svc:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+
+              echo "Criando bucket se não existir..."
+              mc mb local/quay || true
+
+              echo "Aplicando política pública (opcional)..."
+              mc anonymous set download local/quay || true
+
+              echo "Finalizado com sucesso 🚀"
+
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: rootUser
+
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: rootPassword
