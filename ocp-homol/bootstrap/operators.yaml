@@ -1,7 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tekton
+  name: operators
+  namespace: openshift-operators
 spec:
   project: default
 
@@ -9,13 +10,13 @@ spec:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
     #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
-    path: iac/tools/tekton/cicd-pipelines/raw/
+    path: iac/ocp-config/
     directory:
       recurse: true
 
   destination:
-    name: ocp-homol
-    namespace: openshift
+    name: in-cluster
+    namespace: openshift-operators
 
   syncPolicy:
     automated:
