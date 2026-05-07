@@ -1,8 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocp-homol-apps-config
-  namespace: openshift-gitops
+  name: ocp-homol-nexus
 spec:
   project: default
 
@@ -10,13 +9,11 @@ spec:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
     #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
-    path: ocp-homol/apps-config
-    directory:
-      recurse: true
+    path: tools/nexus/
 
   destination:
     name: ocp-homol
-    namespace: ocp-homol
+    namespace: nexus
 
   syncPolicy:
     automated:
