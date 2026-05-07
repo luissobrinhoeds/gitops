@@ -15,8 +15,8 @@ spec:
       recurse: true
 
   destination:
-    name: in-cluster
-    namespace: openshift-gitops
+    name: ocp-homol
+    namespace: openshift-operators
 
   syncPolicy:
     automated:
