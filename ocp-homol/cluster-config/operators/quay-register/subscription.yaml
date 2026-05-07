@@ -3,10 +3,6 @@ kind: Subscription
 metadata:
   name: quay-operator
   namespace: openshift-operators
-  labels:
-    operators.coreos.com/quay-operator.openshift-operators: ''
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
 spec:
   channel: stable-3.17
   installPlanApproval: Manual

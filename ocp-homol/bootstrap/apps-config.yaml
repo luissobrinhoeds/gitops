@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: operators
-  namespace: openshift-operators
+  name: ocp-homol-apps-config
+  namespace: openshift-gitops
 spec:
   project: default
 
