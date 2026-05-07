@@ -36,5 +36,5 @@ buckets:
 
 users:
   - accessKey: quay-user
-    secretKey: quay-secret
+    secretKey: QmzQsDm3SWC8XRjEO98l2JdzAOeTqJ
     policy: readwrite
