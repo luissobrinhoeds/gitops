@@ -16,7 +16,7 @@ spec:
 
   destination:
     name: ocp-homol
-    namespace: openshift-operators
+    namespace: ocp-homol
 
   syncPolicy:
     automated:
