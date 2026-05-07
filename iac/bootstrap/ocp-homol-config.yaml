@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: ocp-homol-config
-  namespace: argocd-manager
+  namespace: openshift-gitops
 spec:
   project: default
 
@@ -15,8 +15,8 @@ spec:
       recurse: true
 
   destination:
-    name: ocp-homol
-    namespace: argocd-manager
+    name: in-cluster
+    namespace: openshift-gitops
 
   syncPolicy:
     automated:
