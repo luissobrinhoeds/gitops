@@ -4,9 +4,13 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 
+resources:
+  - rolebinding.yaml
+
 helmCharts:
   - name: minio
     repo: https://charts.min.io/
     releaseName: minio
     namespace: minio
     valuesFile: values.yaml
+
