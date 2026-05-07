@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocp-homol-cluster-config
+  name: ocp-homol-app-of-apps
 spec:
   project: default
 
@@ -9,7 +9,7 @@ spec:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
     #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
-    path: ocp-homol/cluster-config/
+    path: ocp-homol/app-projects/
     directory:
       recurse: true
 
