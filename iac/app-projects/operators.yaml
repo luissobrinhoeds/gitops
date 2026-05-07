@@ -10,6 +10,8 @@ spec:
     #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
     path: iac/ocp-config/operators/
+    directory:
+      recurse: true
 
   destination:
     name: ocp-homol
