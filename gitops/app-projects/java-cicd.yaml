@@ -6,7 +6,8 @@ spec:
   project: default
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
-    path: apps/tekton/cicd-pipelines/helm
+    #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
+    path: iac/tools/tekton/cicd-pipelines/helm
     targetRevision: HEAD
     helm:
       valueFiles:

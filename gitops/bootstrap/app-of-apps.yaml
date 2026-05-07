@@ -1,18 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nexus
+  name: app-of-apps
+  namespace: openshift-gitops
 spec:
   project: default
 
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
+    #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
-    path: apps/nexus/
+    path: gitops/app-projects/
+    directory:
+      recurse: true
 
   destination:
-    name: ocp-homol
-    namespace: nexus
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
 
   syncPolicy:
     automated:

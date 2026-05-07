@@ -1,0 +1,56 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  annotations:
+    machine.openshift.io/memoryMb: "16384"
+    machine.openshift.io/vCPU: "4"
+    argocd.argoproj.io/sync-options: Skip=true
+  labels:
+    hive.openshift.io/machine-pool: infra
+    hive.openshift.io/managed: "true"
+    machine.openshift.io/cluster-api-cluster: ocp-homol-24kpm
+  name: ocp-homol-24kpm-infra
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: ocp-homol-24kpm
+      machine.openshift.io/cluster-api-machineset: ocp-homol-24kpm-infra
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: ocp-homol-24kpm
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra
+        machine.openshift.io/cluster-api-machineset: ocp-homol-24kpm-infra
+    spec:
+      lifecycleHooks: {}
+      metadata:
+        labels:
+          node-role.kubernetes.io/infra: ""
+      taints:
+        - key: node-role.kubernetes.io/infra
+          effect: NoSchedule
+      providerSpec:
+        value:
+          apiVersion: machine.openshift.io/v1beta1
+          kind: VSphereMachineProviderSpec
+          credentialsSecret:
+            name: vsphere-cloud-credentials
+          diskGiB: 120
+          memoryMiB: 16384
+          numCPUs: 4
+          numCoresPerSocket: 2
+          network:
+            devices:
+              - networkName: 10.135.200
+          template: ocp-homol-24kpm-rhcos-default_domain
+          userDataSecret:
+            name: worker-user-data
+          workspace:
+            server: sipavc30v.fsfx.org.br
+            datacenter: FSFX_Ipatinga
+            datastore: /FSFX_Ipatinga/datastore/Datastores HMC II OpenShift Pool/VMDATA119_ME5024
+            folder: /FSFX_Ipatinga/vm/Servidor de OPENSHIFT POOL #Ajuste na pasta do vCenter
+            resourcePool: /FSFX_Ipatinga/host/FSFX - HMC-II/Resources/OPENSHIFT Pool/OCP-HOMOL #Ajuste no nome do pool para maiusculo 

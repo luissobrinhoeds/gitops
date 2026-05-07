@@ -1,20 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tekton
+  name: nexus
 spec:
   project: default
 
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
+    #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
-    path: apps/tekton/cicd-pipelines/raw/
-    directory:
-      recurse: true
+    path: iac/tools/nexus/
 
   destination:
     name: ocp-homol
-    namespace: openshift
+    namespace: nexus
 
   syncPolicy:
     automated:

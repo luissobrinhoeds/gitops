@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ocp-homol-config
-  namespace: openshift-gitops
+  name: tekton
 spec:
   project: default
 
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
+    #repoURL: ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
     targetRevision: HEAD
-    path: ocp-config/
+    path: iac/tools/tekton/cicd-pipelines/raw/
     directory:
       recurse: true
 
   destination:
     name: ocp-homol
-    namespace: openshift-gitops
+    namespace: openshift
 
   syncPolicy:
     automated:

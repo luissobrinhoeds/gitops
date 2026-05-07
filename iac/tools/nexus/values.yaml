@@ -5,7 +5,7 @@ image:
   tag: 3.68.1
 
 persistence:
-  enabled: false
+  enabled: true
   storageSize: 20Gi
   # storageClass: ocs-storagecluster-ceph-rbd
 
