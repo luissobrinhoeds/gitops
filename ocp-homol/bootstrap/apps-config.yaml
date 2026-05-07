@@ -15,7 +15,7 @@ spec:
       recurse: true
 
   destination:
-    name: in-cluster
+    name: ocp-homol
     namespace: openshift-operators
 
   syncPolicy:
