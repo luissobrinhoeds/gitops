@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pipelines
+  namespace: openshift-gitops
+spec:
+  description: Projeto para pipelines CI/CD
+
+  sourceRepos:
+    - git@github.com:luissobrinhoeds/pipelines.git
+    #- ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
+
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
