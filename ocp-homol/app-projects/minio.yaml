@@ -4,7 +4,7 @@ metadata:
   name: ocp-homol-minio
   namespace: openshift-gitops
 spec:
-  project: default
+  project: ocp-homol
 
   source:
     repoURL: git@github.com:luissobrinhoeds/gitops.git
