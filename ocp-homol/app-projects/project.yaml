@@ -12,7 +12,8 @@ spec:
 
   destinations:
     - namespace: '*'
-      name: in-cluster
+      name: '*'
+      server: '*'
 
   clusterResourceWhitelist:
     - group: '*'
