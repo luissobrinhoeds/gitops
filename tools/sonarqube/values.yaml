@@ -37,3 +37,7 @@ postgresql:
 
 prometheusExporter:
   enabled: false
+
+prometheusMonitoring:
+  podMonitor:
+    enabled: false
