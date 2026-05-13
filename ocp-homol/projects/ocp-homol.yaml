@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: pipelines
+  name: ocp-homol
   namespace: openshift-gitops
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
-  description: Projeto para pipelines CI/CD
+  description: Projeto para configuração do cluster
 
   sourceRepos:
-    - git@github.com:luissobrinhoeds/pipelines.git
+    - git@github.com:luissobrinhoeds/gitops.git
     #- ssh://git@gogs.fsfx.org.br:2222/srvopenshift/ocp-gitops-platform.git
 
   destinations:
