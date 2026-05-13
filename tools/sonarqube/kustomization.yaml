@@ -5,7 +5,7 @@ helmCharts:
   - name: sonarqube
     repo: https://SonarSource.github.io/helm-chart-sonarqube
     releaseName: sonarqube
-    namespace: sonarqub
+    namespace: sonarqube
     valuesFile: values.yaml
 
 resources:
