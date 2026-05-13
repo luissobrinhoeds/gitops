@@ -1,0 +1,36 @@
+OpenShift:
+  enabled: true
+  createSCC: false
+  route:
+    enabled: true
+    tls:
+      termination: edge
+
+community:
+  enabled: true
+
+replicaCount: 1
+
+persistence:
+  enabled: true
+  size: 100Gi
+
+setAdminPassword:
+  passwordSecretName: sonarqube-admin
+
+resources:
+  limits:
+    cpu: 4
+    memory: 2Gi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+postgresql:
+  resources:
+    limits:
+      cpu: 4
+      memory: 2Gi
+    requests:
+      cpu: 50m
+      memory: 128Mi
