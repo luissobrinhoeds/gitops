@@ -24,6 +24,7 @@ nexus:
       memory: "256Mi"
     limits:
       memory: "2Gi"
+      cpu: 2
   securityContext:
     fsGroup: null
     runAsUser: null
