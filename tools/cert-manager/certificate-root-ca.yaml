@@ -3,6 +3,8 @@ kind: Certificate
 metadata:
   name: selfsigned-ca
   namespace: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   commonName: openshift-internal-ca
   isCA: true
