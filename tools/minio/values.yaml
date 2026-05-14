@@ -38,3 +38,6 @@ users:
   - accessKey: quay-user
     secretKey: QmzQsDm3SWC8XRjEO98l2JdzAOeTqJ
     policy: readwrite
+
+tls:
+  enabled: true
