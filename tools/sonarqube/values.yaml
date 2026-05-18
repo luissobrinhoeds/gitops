@@ -3,7 +3,7 @@ OpenShift:
   createSCC: false
   route:
     enabled: true
-    host: "sonarqube.apps.ocp-homol.sandbox1019.opentlc.com"
+    host: "sonarqube.apps.ocp-homol.sandbox3320.opentlc.com"
     tls:
       termination: edge
 
