@@ -1,0 +1,32 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-tls
+  namespace: minio
+spec:
+  secretName: minio-tls-secret
+
+  issuerRef:
+    name: selfsigned-root
+    kind: ClusterIssuer
+
+  commonName: minio.minio.svc.cluster.local
+
+  dnsNames:
+    - minio
+    - minio.minio
+    - minio.minio.svc
+    - minio.minio.svc.cluster.local
+    - minio.apps.seudominio.com
+
+  privateKey:
+    algorithm: RSA
+    size: 2048
+
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+
+  duration: 2160h      # 90 dias
+  renewBefore: 360h   # 15 dias antes
