@@ -39,8 +39,8 @@ users:
     secretKey: QmzQsDm3SWC8XRjEO98l2JdzAOeTqJ
     policy: readwrite
 
-tls:
-  enabled: false
-  certSecret: "minio-tls-secret"
-  publicCrt: "tls.crt"
-  privateKey: "tls.key"
+# tls:
+#   enabled: false
+#   certSecret: "minio-tls-secret"
+#   publicCrt: "tls.crt"
+#   privateKey: "tls.key"
