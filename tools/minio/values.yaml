@@ -40,7 +40,7 @@ users:
     policy: readwrite
 
 tls:
-  enabled: false
+  enabled: true
   certSecret: "minio-tls-secret"
   publicCrt: "tls.crt"
   privateKey: "tls.key"
