@@ -1,0 +1,30 @@
+apiVersion: v1
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIDfzCCAmegAwIBAgIUb997z+3gZUBINVFf1eKGqozRsGcwDQYJKoZIhvcNAQEL
+    BQAwKDEmMCQGA1UEAxMdbWluaW8ubWluaW8uc3ZjLmNsdXN0ZXIubG9jYWwwHhcN
+    MjYwNTE5MjEyNzQxWhcNMjYwODE3MjEyNzQxWjAoMSYwJAYDVQQDEx1taW5pby5t
+    aW5pby5zdmMuY2x1c3Rlci5sb2NhbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+    AQoCggEBAMuVWNRxwcpBr5+1mfie2tamBV+ep5jcoeARPuzUz84BbB5J73qebVzQ
+    n/Nii/JiI7Ur5JdoeujHgWTDOibmKoHZ2t9G8f8yYA9BCdF5usiPq+0s10Qhb1Wc
+    vwhPQdBJDxG3grjxYtx8AtjXyhrGyBONFUHygTtK8WhyYFafKpdMI4XgJNIv+6Hw
+    VD5OVcgsHTqUuZ26773k7MU0vrGqAWFLHhfBhAZ/I9ItCgFFC2TSl65wIYVGgzt4
+    ksmdTi/+GeO62gzgz+r0jiF5qaYut8DYTFt27lbUj4dD6PNDXLavNRRsSZD0Znbx
+    F4Ri91jqa1QKK5ubRRhihAduMAo/k4MCAwEAAaOBoDCBnTAOBgNVHQ8BAf8EBAMC
+    BaAwEwYDVR0lBAwwCgYIKwYBBQUHAwEwDAYDVR0TAQH/BAIwADBoBgNVHREEYTBf
+    ggVtaW5pb4ILbWluaW8ubWluaW+CD21pbmlvLm1pbmlvLnN2Y4IdbWluaW8ubWlu
+    aW8uc3ZjLmNsdXN0ZXIubG9jYWyCGW1pbmlvLmFwcHMuc2V1ZG9taW5pby5jb20w
+    DQYJKoZIhvcNAQELBQADggEBAFgQpGYmEer0F028x8zziYjDSkIOSMqc79Acvg7Q
+    TEB6NfJy7NA0rOJjHYKLKWpj5Ay+50WnFOWMjG6kwfqrseqT7xCWltMPhsXIClD/
+    B73I+h4zNQuBuHkB4s+YrQi7/WYts0twdL9C+tMcYLTfs7eq6OvfA9rmpCTjP4sZ
+    ivnU3ZBYB9DVOJXCMdCnV6Xc72JC7jYbkDBfvQNXlpbU3UY9bZdMQvS6eY0k2Qam
+    GPw3OUT6SJ5qZnVmYDt/f5KL4EWeJ3cOyf432G8q0BZS8bYPKIMsD3YoqfB/6EmZ
+    hbeVPq+qVWr4o57H0wfWoVHJM2/8eB+Y2dsz2LBvokQBjRY=
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  name: minio-ca
+  namespace: quay
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"

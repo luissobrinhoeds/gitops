@@ -49,5 +49,8 @@ spec:
 
     - kind: redis
       managed: true
+      
+  extraCaCerts:
+    name: minio-ca
 
   
