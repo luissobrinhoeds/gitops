@@ -41,3 +41,6 @@ users:
 
 tls:
   enabled: true
+  certSecret: "minio-tls-secret"
+  publicCrt: "tls.crt"
+  privateKey: "tls.key"
