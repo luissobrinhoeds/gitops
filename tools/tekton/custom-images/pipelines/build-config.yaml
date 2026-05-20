@@ -1,7 +1,7 @@
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  name: yq-build
+  name: pipelines-build
   namespace: openshift
 spec:
   source:
