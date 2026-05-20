@@ -16,10 +16,10 @@ spec:
       managed: false
 
     - kind: clair
-      managed: false
+      managed: true
 
     - kind: clairpostgres
-      managed: false
+      managed: true
 
     - kind: mirror
       managed: false
@@ -28,7 +28,7 @@ spec:
       managed: true
 
     - kind: monitoring
-      managed: false
+      managed: true
 
     - kind: quay
       managed: true
