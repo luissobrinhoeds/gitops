@@ -22,13 +22,13 @@ setAdminPassword:
 resources:
   limits:
     cpu: 2
-    memory: 2Gi
+    memory: 4Gi
   requests:
     cpu: 50m
     memory: 128Mi
 
-jvmOpts: "-Xms1536m -Xmx1536m"
-jvmCeOpts: "-Xms1536m -Xmx1536m"
+# jvmOpts: "-Xms1536m -Xmx1536m"
+# jvmCeOpts: "-Xms1536m -Xmx1536m"
 
 prometheusExporter:
   enabled: false
