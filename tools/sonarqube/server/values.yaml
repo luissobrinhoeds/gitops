@@ -27,11 +27,8 @@ resources:
     cpu: 50m
     memory: 128Mi
 
-sonar:
-  web:
-    javaOpts: "-Xms512m -Xmx512m"
-  ce:
-    javaOpts: "-Xms512m -Xmx512m"
+jvmOpts: "-Xms512m -Xmx512m"
+jvmCeOpts: "-Xms512m -Xmx512m"
 
 prometheusExporter:
   enabled: false
