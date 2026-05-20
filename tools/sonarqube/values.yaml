@@ -31,29 +31,6 @@ sonarWebJavaOpts: "-Xms512m -Xmx512m"
 
 sonarCeJavaOpts: "-Xms512m -Xmx512m"
 
-postgresql:
-  enabled: true
-
-  auth:
-    postgresPassword: postgres
-    username: sonar
-    password: sonar
-    database: sonarqube
-
-  primary:
-    persistence:
-      enabled: true
-      size: 20Gi
-
-  resources:
-    limits:
-      cpu: 2
-      memory: 2Gi
-
-    requests:
-      cpu: 50m
-      memory: 128Mi
-
 prometheusExporter:
   enabled: false
 
