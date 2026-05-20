@@ -27,8 +27,8 @@ resources:
     cpu: 50m
     memory: 128Mi
 
-jvmOpts: "-Xms1g -Xmx1g"
-jvmCeOpts: "-Xms1g -Xmx1g"
+jvmOpts: "-Xms1536m -Xmx1536m"
+jvmCeOpts: "-Xms1536m -Xmx1536m"
 
 prometheusExporter:
   enabled: false
