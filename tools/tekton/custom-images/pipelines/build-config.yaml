@@ -13,8 +13,8 @@ spec:
           chmod +x /usr/local/bin/yq
 
       RUN dnf -q install -y jq > /dev/null 2>&1 || { \
-            echo "Falha ao instalar dependências" \
-            exit 1 \
+            echo "Falha ao instalar dependências"; \
+            exit 1; \
           }
   strategy:
     type: Docker
