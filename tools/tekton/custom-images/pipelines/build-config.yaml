@@ -11,6 +11,11 @@ spec:
 
       RUN curl -L https://github.com/mikefarah/yq/releases/download/v4.47.1/yq_linux_amd64 -o /usr/local/bin/yq && \
           chmod +x /usr/local/bin/yq
+
+      RUN dnf -q install -y jq > /dev/null 2>&1 || {
+            echo "Falha ao instalar dependências"
+            exit 1
+          }
   strategy:
     type: Docker
     dockerStrategy:
@@ -18,7 +23,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: yq:latest
+      name: pipelines:latest
   triggers:
     - type: ConfigChange
     - type: ImageChange
